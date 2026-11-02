@@ -1,0 +1,122 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && request.auth.token.email == 'irfanrahat277234@gmail.com';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        isBootstrappedAdmin() ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Connection test route
+    match /test/{testId} {
+      allow read: if true;
+    }
+
+    // Settings Collection: Publicly readable, writeable by Admin
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(settingId);
+    }
+
+    // Admins Collection
+    match /admins/{userId} {
+      allow read: if isSignedIn() && (isAdmin() || request.auth.uid == userId);
+      allow create, update: if isBootstrappedAdmin() || isAdmin();
+      allow delete: if isBootstrappedAdmin();
+    }
+
+    // Members Collection: Publicly readable for QR badge verification, admin-writable, and self-registration allowed for signed-in members
+    match /members/{memberId} {
+      allow read: if true;
+      allow create: if isValidId(memberId) && (
+        isAdmin() ||
+        (isSignedIn() && incoming().linkedUserId == request.auth.uid)
+      );
+      allow update: if isValidId(memberId) && (
+        isAdmin() ||
+        (isSignedIn() && resource.data.linkedUserId == request.auth.uid && incoming().linkedUserId == request.auth.uid)
+      );
+      allow delete: if isAdmin() && isValidId(memberId);
+    }
+
+    // Monthly Dues Collection
+    match /monthly_dues/{dueId} {
+      allow read: if isSignedIn();
+      allow create, update: if isAdmin() && isValidId(dueId);
+      allow delete: if isAdmin() && isValidId(dueId);
+    }
+
+    // Annual Dues Collection
+    match /annual_dues/{dueId} {
+      allow read: if isSignedIn();
+      allow create, update: if isAdmin() && isValidId(dueId);
+      allow delete: if isAdmin() && isValidId(dueId);
+    }
+
+    // Transactions / Cash Book Ledger
+    match /transactions/{transactionId} {
+      allow read: if isSignedIn();
+      allow create, update: if isAdmin() && isValidId(transactionId);
+      allow delete: if isAdmin() && isValidId(transactionId);
+    }
+
+    // Receipts Collection
+    match /receipts/{receiptId} {
+      allow read: if isSignedIn();
+      allow create, update: if isAdmin() && isValidId(receiptId);
+      allow delete: if false; // Receipts must never be silently deleted
+    }
+
+    // Announcements: Public notice board
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(announcementId);
+    }
+
+    // Audit Logs: Append-only ledger
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn() && isValidId(logId);
+      allow update, delete: if false; // Immutable audit log
+    }
+
+    // Member Payment Verification Requests
+    match /payment_requests/{requestId} {
+      allow read: if isSignedIn() && (isAdmin() || resource.data.submittedBy == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(requestId) && incoming().submittedBy == request.auth.uid;
+      allow update: if isSignedIn() && isValidId(requestId) && (
+        isAdmin() || 
+        (resource.data.submittedBy == request.auth.uid && incoming().submittedBy == request.auth.uid)
+      );
+      allow delete: if isAdmin() && isValidId(requestId);
+    }
+  }
+}

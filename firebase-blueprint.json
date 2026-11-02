@@ -1,0 +1,235 @@
+{
+  "entities": {
+    "Settings": {
+      "title": "Settings",
+      "description": "Organizational general settings and configurations",
+      "type": "object",
+      "properties": {
+        "orgNameBn": { "type": "string", "maxLength": 200 },
+        "orgNameEn": { "type": "string", "maxLength": 200 },
+        "address": { "type": "string", "maxLength": 300 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "email": { "type": "string", "maxLength": 100 },
+        "financialYear": { "type": "string", "maxLength": 50 },
+        "defaultMonthlyFee": { "type": "number" },
+        "defaultAnnualFee": { "type": "number" },
+        "logoUrl": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["orgNameBn", "financialYear", "defaultMonthlyFee", "defaultAnnualFee"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized administrators and officers with role-based access",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["super_admin", "president", "general_secretary", "treasurer", "officer"] },
+        "name": { "type": "string", "maxLength": 100 },
+        "assignedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role", "name"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "Registered member profile of Sarkarpara Welfare Association",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string", "pattern": "^MEM-[0-9]{4,6}$", "maxLength": 20 },
+        "nameBn": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "address": { "type": "string", "maxLength": 300 },
+        "joiningDate": { "type": "string", "maxLength": 20 },
+        "status": { "type": "string", "enum": ["active", "inactive", "suspended"] },
+        "position": { "type": "string", "maxLength": 100 },
+        "emergencyContact": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "photoUrl": { "type": "string", "maxLength": 500 },
+        "linkedUserId": { "type": "string", "maxLength": 128 },
+        "linkedEmail": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["memberId", "nameBn", "phone", "joiningDate", "status", "position"]
+    },
+    "MonthlyDue": {
+      "title": "MonthlyDue",
+      "description": "Monthly contribution obligation and payment record for a member",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string", "maxLength": 20 },
+        "memberNameBn": { "type": "string", "maxLength": 150 },
+        "year": { "type": "number" },
+        "month": { "type": "number" },
+        "monthNameBn": { "type": "string", "maxLength": 30 },
+        "amountDue": { "type": "number" },
+        "amountPaid": { "type": "number" },
+        "status": { "type": "string", "enum": ["paid", "partial", "unpaid", "waived"] },
+        "paymentDate": { "type": "string", "maxLength": 30 },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "receiptNumber": { "type": "string", "maxLength": 50 },
+        "recorderId": { "type": "string", "maxLength": 128 },
+        "recorderName": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 300 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["memberId", "year", "month", "amountDue", "amountPaid", "status"]
+    },
+    "AnnualDue": {
+      "title": "AnnualDue",
+      "description": "Annual contribution obligation and payment record for a member",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string", "maxLength": 20 },
+        "memberNameBn": { "type": "string", "maxLength": 150 },
+        "year": { "type": "number" },
+        "financialYear": { "type": "string", "maxLength": 50 },
+        "amountDue": { "type": "number" },
+        "amountPaid": { "type": "number" },
+        "status": { "type": "string", "enum": ["paid", "partial", "unpaid", "waived"] },
+        "paymentDate": { "type": "string", "maxLength": 30 },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "receiptNumber": { "type": "string", "maxLength": 50 },
+        "recorderId": { "type": "string", "maxLength": 128 },
+        "recorderName": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 300 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["memberId", "year", "amountDue", "amountPaid", "status"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Organizational income or expense cash book ledger transaction",
+      "type": "object",
+      "properties": {
+        "transactionId": { "type": "string", "maxLength": 50 },
+        "date": { "type": "string", "maxLength": 30 },
+        "type": { "type": "string", "enum": ["income", "expense"] },
+        "category": { "type": "string", "maxLength": 100 },
+        "amount": { "type": "number" },
+        "description": { "type": "string", "maxLength": 500 },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "voucherRef": { "type": "string", "maxLength": 100 },
+        "receiptNumber": { "type": "string", "maxLength": 50 },
+        "memberId": { "type": "string", "maxLength": 20 },
+        "recordedBy": { "type": "string", "maxLength": 128 },
+        "recordedByName": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["transactionId", "date", "type", "category", "amount", "description", "paymentMethod"]
+    },
+    "Receipt": {
+      "title": "Receipt",
+      "description": "Money receipt issued for member contribution or donation",
+      "type": "object",
+      "properties": {
+        "receiptNumber": { "type": "string", "maxLength": 50 },
+        "memberId": { "type": "string", "maxLength": 20 },
+        "memberNameBn": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "paymentType": { "type": "string", "maxLength": 50 },
+        "period": { "type": "string", "maxLength": 50 },
+        "amount": { "type": "number" },
+        "amountInWords": { "type": "string", "maxLength": 300 },
+        "date": { "type": "string", "maxLength": 30 },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "recorderName": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["receiptNumber", "memberId", "memberNameBn", "amount", "date", "paymentMethod"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Official notice or announcement for all members",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "content": { "type": "string", "maxLength": 2000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "publishedAt": { "type": "string", "maxLength": 30 },
+        "publishedBy": { "type": "string", "maxLength": 128 },
+        "authorName": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "content", "category", "publishedAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Security and operational audit trail log",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string", "maxLength": 100 },
+        "details": { "type": "string", "maxLength": 500 },
+        "performedBy": { "type": "string", "maxLength": 128 },
+        "performedByEmail": { "type": "string", "maxLength": 100 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["action", "details", "performedBy", "timestamp"]
+    },
+    "PaymentRequest": {
+      "title": "PaymentRequest",
+      "description": "Member self-submitted payment verification request",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string", "maxLength": 20 },
+        "memberName": { "type": "string", "maxLength": 150 },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["monthly", "annual", "donation"] },
+        "period": { "type": "string", "maxLength": 50 },
+        "method": { "type": "string", "maxLength": 50 },
+        "trxId": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "submittedBy": { "type": "string", "maxLength": 128 },
+        "reviewedBy": { "type": "string", "maxLength": 128 },
+        "notes": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["memberId", "amount", "type", "period", "method", "trxId", "status", "submittedBy"]
+    }
+  },
+  "firestore": {
+    "/settings/{settingId}": {
+      "schema": "Settings",
+      "description": "Global association settings and configuration"
+    },
+    "/admins/{userId}": {
+      "schema": "Admin",
+      "description": "Administrator and officer permissions map"
+    },
+    "/members/{memberId}": {
+      "schema": "Member",
+      "description": "Member directory and profiles"
+    },
+    "/monthly_dues/{dueId}": {
+      "schema": "MonthlyDue",
+      "description": "Monthly dues obligations and payments"
+    },
+    "/annual_dues/{dueId}": {
+      "schema": "AnnualDue",
+      "description": "Annual dues obligations and payments"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Cashbook and fund accounting entries"
+    },
+    "/receipts/{receiptId}": {
+      "schema": "Receipt",
+      "description": "Official money receipts"
+    },
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "Public notices and organizational updates"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Immutable administrative audit log trail"
+    },
+    "/payment_requests/{requestId}": {
+      "schema": "PaymentRequest",
+      "description": "Member payment submission for admin verification"
+    }
+  }
+}

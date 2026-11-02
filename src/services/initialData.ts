@@ -1,0 +1,374 @@
+import { Member, MonthlyDue, AnnualDue, Transaction, Receipt, Announcement, OrgSettings, AuditLog } from '../types';
+import { generateMonthlyDueId, generateAnnualDueId } from '../utils/calculations';
+import { numberToBengaliWords } from '../utils/bengali';
+
+import { APP_ORG_CONFIG } from '../config/orgConfig';
+
+export const INITIAL_ORG_SETTINGS: OrgSettings = {
+  ...APP_ORG_CONFIG,
+};
+
+export const INITIAL_MEMBERS: Member[] = [
+  {
+    id: 'MEM-0001',
+    memberId: 'MEM-0001',
+    nameBn: 'হাজী মোঃ আকবর আলী',
+    phone: '০১৭০১-১২২২৩৩',
+    address: 'মধ্য সরকারপাড়া, বাড়ি নং ১২',
+    joiningDate: '২০২০-০১-০১',
+    status: 'active',
+    position: 'সভাপতি',
+    emergencyContact: '০১৮১২-০০১১২২ (ছেলে)',
+    notes: 'সংগঠনের প্রতিষ্ঠাতা সভাপতি ও প্রধান উপদেষ্টা',
+    createdAt: '2020-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'MEM-0002',
+    memberId: 'MEM-0002',
+    nameBn: 'মোঃ রফিকুল ইসলাম সরকার',
+    phone: '০১৭০২-৩৩৪৪৫৫',
+    address: 'দক্ষিণ সরকারপাড়া, মাস্টার বাড়ি',
+    joiningDate: '২০২০-০১-০১',
+    status: 'active',
+    position: 'সাধারণ সম্পাদক',
+    emergencyContact: '০১৯১২-৩৩৪৪৫৫',
+    notes: 'কার্যকরী কমিটির সার্বিক সমন্বয়ক',
+    createdAt: '2020-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'MEM-0003',
+    memberId: 'MEM-0003',
+    nameBn: 'মোঃ শফিকুল ইসলাম',
+    phone: '০১৭০৩-৫৫৬৬৭৭',
+    address: 'উত্তর সরকারপাড়া, সরকার ভবন',
+    joiningDate: '২০২০-০১-১৫',
+    status: 'active',
+    position: 'কোষাধ্যক্ষ',
+    emergencyContact: '০১৭০৩-১১২২৩৩',
+    notes: 'তহবিল ও ব্যাংক হিসাবের দায়িত্বপ্রাপ্ত কোষাধ্যক্ষ',
+    createdAt: '2020-01-15T00:00:00.000Z',
+  },
+  {
+    id: 'MEM-0004',
+    memberId: 'MEM-0004',
+    nameBn: 'ইঞ্জিনিয়ার তানভীর আহমেদ',
+    phone: '০১৭০৪-৭৭৮৮৯৯',
+    address: 'পশ্চিম সরকারপাড়া',
+    joiningDate: '২০২১-০৩-১০',
+    status: 'active',
+    position: 'সাংগঠনিক সম্পাদক',
+    emergencyContact: '০১৮০৪-৭৭৮৮৯৯',
+    notes: 'সদস্য অন্তর্ভুক্তি ও যুব কল্যাণ দায়িত্ব',
+    createdAt: '2021-03-10T00:00:00.000Z',
+  },
+  {
+    id: 'MEM-0005',
+    memberId: 'MEM-0005',
+    nameBn: 'মোঃ দেলোয়ার হোসেন',
+    phone: '০১৭০৫-৯৯০০১১',
+    address: 'পূর্ব সরকারপাড়া',
+    joiningDate: '২০২২-০২-০১',
+    status: 'active',
+    position: 'সাধারণ সদস্য',
+    emergencyContact: '০১৯০৫-৯৯০০১১',
+    notes: 'নিয়মিত চাঁদা প্রদানকারী সদস্য',
+    createdAt: '2022-02-01T00:00:00.000Z',
+  },
+  {
+    id: 'MEM-0006',
+    memberId: 'MEM-0006',
+    nameBn: 'মোঃ কামরুল হাসান',
+    phone: '০১৭০৬-১২৩৪৫৬',
+    address: 'মধ্য সরকারপাড়া',
+    joiningDate: '২০২২-০৫-১৫',
+    status: 'active',
+    position: 'সাধারণ সদস্য',
+    emergencyContact: '০১৮০৬-১২৩৪৫৬',
+    notes: 'সামাজিক কার্যক্রমে সক্রিয়',
+    createdAt: '2022-05-15T00:00:00.000Z',
+  },
+  {
+    id: 'MEM-0007',
+    memberId: 'MEM-0007',
+    nameBn: 'মোঃ ফরিদুল হক',
+    phone: '০১৭০৭-৬৫৪৩২১',
+    address: 'উত্তর সরকারপাড়া',
+    joiningDate: '২০২৩-০১-০১',
+    status: 'active',
+    position: 'সাধারণ সদস্য',
+    emergencyContact: '০১৯০৭-৬৫৪৩২১',
+    notes: 'সমাজসেবা উপ-কমিটির সদস্য',
+    createdAt: '2023-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'MEM-0008',
+    memberId: 'MEM-0008',
+    nameBn: 'মোঃ জাহিদ হাসান',
+    phone: '০১৭০৮-৯৮৭৬৫৪',
+    address: 'দক্ষিণ সরকারপাড়া',
+    joiningDate: '২০২৪-০১-১০',
+    status: 'inactive',
+    position: 'সাধারণ সদস্য',
+    emergencyContact: '০১৮০৮-৯৮৭৬৫৪',
+    notes: 'প্রবাসী - সাময়িক কর্মবিরতিতে',
+    createdAt: '2024-01-10T00:00:00.000Z',
+  },
+];
+
+export const INITIAL_MONTHLY_DUES: MonthlyDue[] = (() => {
+  const dues: MonthlyDue[] = [];
+  const currentYear = new Date().getFullYear();
+  const months = [
+    { id: 1, name: 'জানুয়ারি' },
+    { id: 2, name: 'ফেব্রুয়ারি' },
+    { id: 3, name: 'মার্চ' },
+    { id: 4, name: 'এপ্রিল' },
+    { id: 5, name: 'মে' },
+    { id: 6, name: 'জুন' },
+    { id: 7, name: 'জুলাই' },
+    { id: 8, name: 'আগস্ট' },
+    { id: 9, name: 'সেপ্টেম্বর' },
+    { id: 10, name: 'অক্টোবর' },
+    { id: 11, name: 'নভেম্বর' },
+    { id: 12, name: 'ডিসেম্বর' },
+  ];
+
+  for (const m of INITIAL_MEMBERS) {
+    for (const mon of months) {
+      const dueId = generateMonthlyDueId(m.memberId, currentYear, mon.id);
+      const isPaid = (mon.id <= 8 && m.status === 'active') || (m.memberId === 'MEM-0001' && mon.id <= 9);
+      const isPartial = mon.id === 10 && m.memberId === 'MEM-0002';
+
+      const amountDue = 100;
+      const amountPaid = isPaid ? 100 : isPartial ? 50 : 0;
+      const status: 'paid' | 'partial' | 'unpaid' = isPaid ? 'paid' : isPartial ? 'partial' : 'unpaid';
+
+      dues.push({
+        id: dueId,
+        memberId: m.memberId,
+        memberNameBn: m.nameBn,
+        year: currentYear,
+        month: mon.id,
+        monthNameBn: mon.name,
+        amountDue,
+        amountPaid,
+        status,
+        paymentDate: isPaid || isPartial ? `${currentYear}-${mon.id.toString().padStart(2, '0')}-05` : undefined,
+        paymentMethod: isPaid || isPartial ? 'নগদ (Cash)' : undefined,
+        receiptNumber: isPaid ? `REC-M-${currentYear}${mon.id.toString().padStart(2, '0')}-${m.memberId.replace('MEM-', '')}` : undefined,
+        recorderName: isPaid || isPartial ? 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)' : undefined,
+      });
+    }
+  }
+  return dues;
+})();
+
+export const INITIAL_ANNUAL_DUES: AnnualDue[] = (() => {
+  const dues: AnnualDue[] = [];
+  const currentYear = new Date().getFullYear();
+  for (const m of INITIAL_MEMBERS) {
+    const annualDueId = generateAnnualDueId(m.memberId, currentYear);
+    const isPaid = m.memberId === 'MEM-0001' || m.memberId === 'MEM-0002' || m.memberId === 'MEM-0003' || m.memberId === 'MEM-0004';
+    dues.push({
+      id: annualDueId,
+      memberId: m.memberId,
+      memberNameBn: m.nameBn,
+      year: currentYear,
+      financialYear: `${currentYear}-${currentYear + 1}`,
+      amountDue: 500,
+      amountPaid: isPaid ? 500 : 0,
+      status: isPaid ? 'paid' : 'unpaid',
+      paymentDate: isPaid ? `${currentYear}-01-10` : undefined,
+      paymentMethod: isPaid ? 'ব্যাংক ট্রান্সফার (Bank)' : undefined,
+      receiptNumber: isPaid ? `REC-A-${currentYear}-${m.memberId.replace('MEM-', '')}` : undefined,
+      recorderName: isPaid ? 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)' : undefined,
+    });
+  }
+  return dues;
+})();
+
+export const INITIAL_TRANSACTIONS: Transaction[] = [
+  {
+    id: 'TXN-INC-20250101-1001',
+    transactionId: 'TXN-INC-20250101-1001',
+    date: '2025-01-01',
+    type: 'income',
+    category: 'উদ্বৃত্ত তহবিল (প্রারম্ভিক নগদ স্থিতি)',
+    amount: 15000,
+    description: 'পূর্ববর্তী অর্থবছর থেকে স্থানান্তরিত উদ্বৃত্ত নগদ তহবিল (Cash in Hand)',
+    paymentMethod: 'নগদ (Cash)',
+    recordedBy: 'system',
+    recordedByName: 'সুপার অ্যাডমিন',
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'TXN-INC-20250101-1002',
+    transactionId: 'TXN-INC-20250101-1002',
+    date: '2025-01-01',
+    type: 'income',
+    category: 'উদ্বৃত্ত তহবিল (প্রারম্ভিক ব্যাংক স্থিতি)',
+    amount: 10000,
+    description: 'পূর্ববর্তী অর্থবছর থেকে সোনালী ব্যাংক হিসাবে সংরক্ষিত উদ্বৃত্ত তহবিল',
+    paymentMethod: 'ব্যাংক ট্রান্সফার (Bank)',
+    recordedBy: 'system',
+    recordedByName: 'সুপার অ্যাডমিন',
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'TXN-INC-20250110-1002',
+    transactionId: 'TXN-INC-20250110-1002',
+    date: '2025-01-10',
+    type: 'income',
+    category: 'সদস্য বার্ষিক চাঁদা',
+    amount: 2000,
+    description: 'কার্যকরী কমিটির ৪ জন সদস্যের বার্ষিক চাঁদা সংগ্রহ (MEM-0001 to MEM-0004)',
+    paymentMethod: 'ব্যাংক ট্রান্সফার (Bank)',
+    recordedBy: 'treasurer',
+    recordedByName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    createdAt: '2025-01-10T10:00:00.000Z',
+  },
+  {
+    id: 'TXN-INC-20250215-1003',
+    transactionId: 'TXN-INC-20250215-1003',
+    date: '2025-02-15',
+    type: 'income',
+    category: 'বিশেষ অনুদান (Donation)',
+    amount: 15000,
+    description: 'গ্রামের অস্বচ্ছল মেধাবী শিক্ষার্থীদের শিক্ষা তহবিল বাবদ বিশেষ অনুদান',
+    paymentMethod: 'বিকাশ (bKash)',
+    recordedBy: 'treasurer',
+    recordedByName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    createdAt: '2025-02-15T14:30:00.000Z',
+  },
+  {
+    id: 'TXN-EXP-20250220-2001',
+    transactionId: 'TXN-EXP-20250220-2001',
+    date: '2025-02-20',
+    type: 'expense',
+    category: 'শিক্ষা সহায়তা ও শিক্ষা উপকরণ বিতরণ',
+    amount: 7500,
+    description: 'সরকারপাড়া প্রাথমিক বিদ্যালয়ের অস্বচ্ছল শিক্ষার্থীদের খাতা, ব্যাগ ও শিক্ষা সামগ্রী বিতরণ',
+    paymentMethod: 'নগদ (Cash)',
+    voucherRef: 'VOUCH-012',
+    recordedBy: 'treasurer',
+    recordedByName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    createdAt: '2025-02-20T11:00:00.000Z',
+  },
+  {
+    id: 'TXN-EXP-20250305-2002',
+    transactionId: 'TXN-EXP-20250305-2002',
+    date: '2025-03-05',
+    type: 'expense',
+    category: 'সাধারণ সভার খরচ ও চা-নাশতা',
+    amount: 1800,
+    description: 'মাসিক সাধারণ সভার চা-নাশতা ও ফাইল-খাতা ক্রয়',
+    paymentMethod: 'নগদ (Cash)',
+    voucherRef: 'VOUCH-018',
+    recordedBy: 'treasurer',
+    recordedByName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    createdAt: '2025-03-05T17:00:00.000Z',
+  },
+];
+
+export const INITIAL_RECEIPTS: Receipt[] = [
+  {
+    id: 'REC-M-202501-0001',
+    receiptNumber: 'REC-M-202501-0001',
+    memberId: 'MEM-0001',
+    memberNameBn: 'হাজী মোঃ আকবর আলী',
+    phone: '০১৭০১-১২২২৩৩',
+    paymentType: 'monthly',
+    period: 'জানুয়ারি ২০২৫',
+    amount: 100,
+    amountInWords: numberToBengaliWords(100),
+    date: '2025-01-05',
+    paymentMethod: 'নগদ (Cash)',
+    recorderName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    notes: 'নিয়মিত মাসিক চাঁদা',
+    createdAt: '2025-01-05T10:00:00.000Z',
+  },
+  {
+    id: 'REC-A-2025-0001',
+    receiptNumber: 'REC-A-2025-0001',
+    memberId: 'MEM-0001',
+    memberNameBn: 'হাজী মোঃ আকবর আলী',
+    phone: '০১৭০১-১২২২৩৩',
+    paymentType: 'annual',
+    period: 'বার্ষিক চাঁদা (২০২৫-২০২৬)',
+    amount: 500,
+    amountInWords: numberToBengaliWords(500),
+    date: '2025-01-10',
+    paymentMethod: 'ব্যাংক ট্রান্সফার (Bank)',
+    recorderName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    notes: 'বার্ষিক সদস্য ফি',
+    createdAt: '2025-01-10T11:00:00.000Z',
+  },
+  {
+    id: 'REC-M-202502-0002',
+    receiptNumber: 'REC-M-202502-0002',
+    memberId: 'MEM-0002',
+    memberNameBn: 'মোঃ রফিকুল ইসলাম সরকার',
+    phone: '০১৭০২-৩৩৪৪৫৫',
+    paymentType: 'monthly',
+    period: 'ফেব্রুয়ারি ২০২৫',
+    amount: 100,
+    amountInWords: numberToBengaliWords(100),
+    date: '2025-02-05',
+    paymentMethod: 'নগদ (Cash)',
+    recorderName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    notes: 'নিয়মিত মাসিক চাঁদা',
+    createdAt: '2025-02-05T10:00:00.000Z',
+  },
+];
+
+export const INITIAL_ANNOUNCEMENTS: Announcement[] = [
+  {
+    id: 'ann_monthly_10th_auto',
+    title: 'জরুরি বিজ্ঞপ্তি: প্রতি মাসের ১০ তারিখের মধ্যে মাসিক চাঁদা পরিশোধ সংক্রান্ত',
+    content: 'সকল সম্মানিত সদস্যদের সদয় অবগতির জন্য জানানো যাচ্ছে যে, সরকার পাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন (SPWA)-এর গঠনতন্ত্র অনুযায়ী প্রতি মাসের ১০ তারিখের মধ্যে চলতি মাসের মাসিক চাঁদা (৳১০০) পরিশোধ করার বাধ্যবাধকতা রয়েছে। বকেয়া এড়াতে প্রতি মাসের ১০ তারিখের মধ্যে কোষাধ্যক্ষ মহোদয়ের নিকট অথবা অনলাইন বিকাশ/নগদে চাঁদা পরিশোধ করে পোর্টালে ট্রানজেকশন আইডি এন্ট্রি করার জন্য অনুরোধ করা হলো।',
+    category: 'মাসিক চাঁদা নোটিফিকেশন',
+    publishedAt: 'চলতি অর্থবছর',
+    publishedBy: 'system',
+    authorName: 'অর্থ ও কোষাধ্যক্ষ পরিষদ (SPWA)',
+    createdAt: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'ann_01',
+    title: 'আসন্ন বার্ষিক সাধারণ সভা ও সদস্য সম্মিলন',
+    content: 'সম্মানিত সদস্যবৃন্দ, আগামী মাসের প্রথম শুক্রবার সরকারপাড়া সমাজকল্যাণ ভবনে আমাদের বার্ষিক সাধারণ সভা ও সদস্য সম্মেলন অনুষ্ঠিত হবে। সকল সদস্যকে যথাসময়ে উপস্থিত থাকার অনুরোধ করা হচ্ছে।',
+    category: 'সভা',
+    publishedAt: '২০২৫-০৩-০১',
+    publishedBy: 'system',
+    authorName: 'মোঃ রফিকুল ইসলাম সরকার (সাধারণ সম্পাদক)',
+    createdAt: '2025-03-01T08:00:00.000Z',
+  },
+  {
+    id: 'ann_02',
+    title: 'নিয়মিত মাসিক ও বার্ষিক চাঁদা পরিশোধের বিশেষ তাগিদ',
+    content: 'অ্যাসোসিয়েশনের সমাজকল্যাণমূলক কর্মকাণ্ড সুষ্ঠুভাবে পরিচালনার জন্য সকল সদস্যকে তাঁদের বকেয়া মাসিক ও বার্ষিক চাঁদা পরিশোধ করার বিনীত আহ্বান জানানো হচ্ছে। আপনারা কোষাধ্যক্ষ মহোদয়ের কাছে সরাসরি অথবা বিকাশ/ব্যাংকের মাধ্যমে চাঁদা জমা দিয়ে রশিদ সংগ্রহ করুন।',
+    category: 'চাঁদা তাগিদ',
+    publishedAt: '২০২৫-০২-১৫',
+    publishedBy: 'system',
+    authorName: 'মোঃ শফিকুল ইসলাম (কোষাধ্যক্ষ)',
+    createdAt: '2025-02-15T09:00:00.000Z',
+  },
+];
+
+export const INITIAL_AUDIT_LOGS: AuditLog[] = [
+  {
+    id: 'log_01',
+    action: 'SYSTEM_INITIALIZED',
+    details: 'সরকারপাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন ডাটাবেস ও প্রাথমিক রেকর্ড প্রস্তুত করা হয়েছে।',
+    performedBy: 'system',
+    performedByEmail: 'irfanrahat277234@gmail.com',
+    timestamp: '2025-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'log_02',
+    action: 'SETTINGS_CONFIGURED',
+    details: 'অর্থবছর ২০২৫-২০২৬ এবং মাসিক চাঁদা ১০০ টাকা নির্ধারণ করা হয়েছে।',
+    performedBy: 'admin',
+    performedByEmail: 'irfanrahat277234@gmail.com',
+    timestamp: '2025-01-01T10:00:00.000Z',
+  },
+];

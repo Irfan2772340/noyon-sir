@@ -1,0 +1,8 @@
+{
+  "name": "সরকারপাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন SARKARPARA WELFARE ASSOCIATION",
+  "description": "সরকারপাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন-এর পূর্ণাঙ্গ সাংগঠনিক ও আর্থিক ব্যবস্থাপনা পোর্টাল। সদস্য তালিকা, মাসিক ও বার্ষিক চাঁদা, আয়-ব্যয় এবং রশিদ ব্যবস্থাপনা।",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

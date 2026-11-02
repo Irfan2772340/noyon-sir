@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>অফলাইন • সরকার পাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন (SPWA)</title>
+    <link rel="icon" type="image/png" href="/pwa-192x192.png" />
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #064e3b;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 32px 24px;
+        border-radius: 20px;
+        max-width: 420px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      }
+      h1 { font-size: 20px; margin: 16px 0 8px; color: #fde047; }
+      p { font-size: 14px; line-height: 1.6; color: #e2e8f0; margin-bottom: 24px; }
+      button {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      button:hover { background: #059669; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img src="/pwa-192x192.png" alt="SPWA Logo" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #fde047;" />
+      <h1>ইন্টারনেট সংযোগ নেই (Offline)</h1>
+      <p>আপনি বর্তমানে অফলাইনে আছেন। সরকার পাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন (SPWA) পোর্টাল পুনরায় লোড করতে আপনার ইন্টারনেট সংযোগ চেক করুন।</p>
+      <button onclick="window.location.reload()">পুনরায় চেষ্টা করুন (Retry)</button>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "appId": "org.sarkarpara.spwa",
+  "appName": "SPWA - সরকার পাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "backgroundColor": "#064e3b",
+    "allowMixedContent": true
+  }
+}

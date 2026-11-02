@@ -1,0 +1,79 @@
+{
+  "id": "/",
+  "name": "সরকার পাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন (SPWA)",
+  "short_name": "SPWA উলিপুর",
+  "description": "সরকার পাড়া ওয়েলফেয়ার অ্যাসোসিয়েশন (SPWA) - শিক্ষা, সেবা, একতা ও উন্নয়ন। উলিপুর, কুড়িগ্রাম। পূর্ণাঙ্গ ডিজিটাল চাঁদা ও সদস্য ব্যবস্থাপনা প্ল্যাটফর্ম।",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#064e3b",
+  "theme_color": "#047857",
+  "lang": "bn",
+  "dir": "ltr",
+  "categories": ["finance", "social", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SPWA প্রধান ড্যাশবোর্ড ও তহবিল হিসাব"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "সদস্য ডিজিটাল আইডি কার্ড ও কিউআর যাচাই"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "আমার হিসাব ও প্রোফাইল",
+      "short_name": "আমার হিসাব",
+      "description": "সদস্যের চাঁদা, রসিদ ও ব্যক্তিগত প্রোফাইল",
+      "url": "/?tab=my_account",
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "মাসিক চাঁদা রেজিস্টার",
+      "short_name": "মাসিক চাঁদা",
+      "description": "প্রতি মাসের ১০ তারিখের চাঁদা আদায় পোর্টাল",
+      "url": "/?tab=monthly",
+      "icons": [
+        {
+          "src": "/pwa-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
